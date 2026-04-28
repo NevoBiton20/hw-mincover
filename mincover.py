@@ -31,18 +31,10 @@ def mincover(graph: nx.Graph) -> set:
         for i, node in enumerate(nodes)
     }
 
-    # Objective: minimize x_1 + x_2 + ... + x_n
     c = np.ones(n)
-
-    # Bounds: each variable is between 0 and 1
     bounds = Bounds(np.zeros(n), np.ones(n))
-
-    # Integrality: each variable must be integer
-    # Together with bounds [0, 1], this means each variable is binary.
     integrality = np.ones(n)
 
-    # Constraints:
-    # For every edge (u, v), require x_u + x_v >= 1
     A = []
     for u, v in graph.edges:
         row = np.zeros(n)
