@@ -18,41 +18,14 @@ def mincover(graph: nx.Graph)->set:
     >>> len(mincover(nx.Graph([])))
     0
     """
-    # I chose to implement this function using the branch-and-bound algorithm
-    graph = graph.copy()
-    best = set(graph.nodes)
+    nodes = list(graph.nodes)
 
-    def search(G, cover):
-        nonlocal best
+    for k in range(len(nodes) + 1):
+        for candidate in combinations(nodes, k):
+            cover = set(candidate)
 
-        # If current cover is already not better, stop
-        if len(cover) >= len(best):
-            return
-
-        # If no edges remain, we found a valid cover
-        if G.number_of_edges() == 0:
-            best = set(cover)
-            return
-
-        matching = nx.maximal_matching(G)
-        if len(cover) + len(matching) >= len(best):
-            return
-
-        # Pick an edge
-        u, v = next(iter(G.edges))
-
-        # include u
-        G1 = G.copy()
-        G1.remove_node(u)
-        search(G1, cover | {u})
-
-        # include v
-        G2 = G.copy()
-        G2.remove_node(v)
-        search(G2, cover | {v})
-
-    search(graph, set())
-    return best
+            if all(u in cover or v in cover for u, v in graph.edges):
+                return cover
 
 
 if __name__ == '__main__':
