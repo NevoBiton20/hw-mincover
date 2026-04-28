@@ -20,10 +20,21 @@ def mincover(graph: nx.Graph)->set:
     """
     nodes = list(graph.nodes)
 
-    for k in range(len(nodes) + 1):
-        for candidate in combinations(nodes, k):
-            cover = set(candidate)
+    def generate_subsets_of_size(k, start, current):
+        """
+        Recursively generate all subsets of size k.
+        """
+        if len(current) == k:
+            yield set(current)
+            return
 
+        for i in range(start, len(nodes)):
+            current.append(nodes[i])
+            yield from generate_subsets_of_size(k, i + 1, current)
+            current.pop()
+
+    for k in range(len(nodes) + 1):
+        for cover in generate_subsets_of_size(k, 0, []):
             if all(u in cover or v in cover for u, v in graph.edges):
                 return cover
 
